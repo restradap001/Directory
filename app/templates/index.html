@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block styles %}{% endblock %}
+
+{% block title %}Where's My Restaurant?{% endblock %}
+
+{% block content %}
+    <div class="container-fluid p-4">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <h4 class="fw-semibold">List of Restaurants:</h4>
+                </div>
+                <div class="col-2">
+                    <div class="d-grid">
+                        <a href="{% url 'app:create-restaurant-view' %}" class="btn btn-outline-success"><i class="bi bi-plus me-2"></i>New Restaurant</a>
+                    </div>
+                </div>
+            </div>
+
+
+            <hr class="divider mb-4">
+            <div class="row row-cols-3" id="restaurant-container"></div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        fetch_restaurants();
+
+        function fetch_restaurants() {
+            var container = document.getElementById('restaurant-container');
+            var url = 'http://127.0.0.1:8000/api/restaurant-list/';
+            fetch(url).then((response) => response.json()).then(function (data) {
+                console.log('Data: ', data);
+                var list = data;
+                for (var i in list) {
+                    var card =
+                        '<div class="col"><div class="card" id="data-row-${i}">' +
+                        '<h5 class="card-header"><i class="bi bi-star me-2"></i>'+ list[i].type + '</h5><div class="card-body">' +
+                        '<h5 class="card-title"><i class="bi bi-shop me-2"></i>' + list[i].name + '</h5>' +
+                        '<h6 class="card-subtitle mb-2 text-muted"><i class="bi bi-telephone me-2"></i>' + list[i].telephone + '</h6>' +
+                        '<p class="card-text"><i class="bi bi-map me-2"></i>' + list[i].address + '</p>' +
+                        '<div class="row"><div class="col-4 offset-3 p-0"><div class="d-grid">' +
+                        '<button type="button" class="btn btn-outline-secondary"><i class="bi bi-pencil me-2"></i>Update</button>' +
+                        '</div></div><div class="col-5"><div class="d-grid">' +
+                        '<button type="button" class="btn btn-outline-danger"><i class="bi bi-trash me-2"></i>Delete</button>' +
+                        '</div></div></div></div></div></div>';
+                    container.innerHTML += card;
+                }
+            });
+        }
+    </script>
+{% endblock %}
